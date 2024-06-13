@@ -1,10 +1,6 @@
 import psutil
 import socket
 
-interfaces = psutil.net_if_addrs()
-stats = psutil.net_if_stats()
-io_counters = psutil.net_io_counters(pernic=True)
-
 def is_vpn(interface_name):
     vpn_keywords = ["vpn", "tun", "tap", "ppp", "ipsec", "pptp", "l2tp", "openvpn"]
     return any(keyword in interface_name.lower() for keyword in vpn_keywords)
@@ -22,7 +18,9 @@ def show_addresses(addresses):
         elif address.family == psutil.AF_LINK:
             print(f"\n\tMAC Address:\t{address.address}")
             
-def show_status(interface_name, stats):
+def show_status(interface_name):
+    stats = psutil.net_if_stats()
+    
     if interface_name in stats:
         is_up = stats[interface_name].isup
         iface_stats = stats[interface_name]
@@ -32,7 +30,9 @@ def show_status(interface_name, stats):
         print(f"\tDuplex:\t\t{'Full' if iface_stats.duplex == psutil.NIC_DUPLEX_FULL else 'Half' if iface_stats.duplex == psutil.NIC_DUPLEX_HALF else 'Unknown'}")
         print(f"\tMTU:\t\t{iface_stats.mtu} bytes")
 
-def show_io_counters(interface_name, io_counters):
+def show_io_counters(interface_name):
+    io_counters = psutil.net_io_counters(pernic=True)
+    
     if interface_name in io_counters:
         iface_io = io_counters[interface_name]
         print(f"\n\tBytes Sent:\t{iface_io.bytes_sent}")
@@ -50,8 +50,8 @@ def show_network_interfaces():
     for interface_name, addresses in interfaces.items():
         print(f"\nInterface: {interface_name}\n")
         
-        show_status(interface_name, stats)
-        show_io_counters(interface_name, io_counters)
+        show_status(interface_name)
+        show_io_counters(interface_name)
         show_addresses(addresses)
 
 if __name__ == "__main__":
