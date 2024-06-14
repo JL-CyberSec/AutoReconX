@@ -1,9 +1,22 @@
 import psutil
 import socket
+import requests
 
 def is_vpn(interface_name):
     vpn_keywords = ["vpn", "tun", "tap", "ppp", "ipsec", "pptp", "l2tp", "openvpn"]
     return any(keyword in interface_name.lower() for keyword in vpn_keywords)
+    
+def check_internet_access():
+    try:
+        response = requests.get('https://api.ipify.org?format=json', timeout=2)
+        public_ip = response.json()['ip']
+        internet_access = "Yes"
+    except:
+        internet_access = "No"
+        public_ip = "Unavailable"
+    
+    print(f"Internet Access:\t{internet_access}")
+    print(f"Public IP Address:\t{public_ip}")
 
 def show_addresses(addresses):
     for address in addresses:
@@ -47,12 +60,16 @@ def show_io_counters(interface_name):
 def show_network_interfaces():
     interfaces = psutil.net_if_addrs()
     
+    check_internet_access()
+    
     for interface_name, addresses in interfaces.items():
-        print(f"\nInterface: {interface_name}\n")
+        print(f"\nInterface: {interface_name}")
         
         show_status(interface_name)
         show_io_counters(interface_name)
         show_addresses(addresses)
+        
+    print()
 
 if __name__ == "__main__":
     show_network_interfaces()
