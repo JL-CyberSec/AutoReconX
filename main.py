@@ -2,6 +2,7 @@ import sys
 import termios
 import tty
 import tools.intro as intro
+import tools.system as system
 import tools.interfaces as interfaces
 import tools.firewall as firewall
 import tools.devices as devices
@@ -28,6 +29,7 @@ def ask_for_next_step():
 
 services = [
     intro,
+    system,
     interfaces,
     firewall,
     devices
