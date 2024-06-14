@@ -1,3 +1,4 @@
 sudo apt update -y
 sudo apt install neofetch -y
+sudo apt install dirb -y
 pip3 install -r requirements.txt
