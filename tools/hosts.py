@@ -3,6 +3,9 @@ import nmap
 import netifaces as ni
 import socket
 import misc
+import tools.files as files
+
+http_hosts = []
 
 def get_active_ip_addresses():
     """
@@ -86,7 +89,7 @@ def scan_networks(ip_addresses):
         with tqdm(total=len(ip_addresses), desc="Scanning network", unit="IP") as pbar:
             for ip in ip_addresses:
                 pbar.set_description(f"Scanning network for {ip}")
-                nm.scan(hosts=f"{ip}/24", arguments="-sP")
+                nm.scan(hosts=f"{ip}/24", arguments="-T5 -sP")
 
                 for host in nm.all_hosts():
                     if host not in devices_found:
@@ -99,7 +102,7 @@ def scan_networks(ip_addresses):
         with tqdm(total=len(devices_found), desc="Scanning devices", unit="device") as pbar_devices:
             for host in devices_found:
                 pbar_devices.set_description(f"Scanning {host}")
-                nm.scan(hosts=host, arguments="-O -sV")
+                nm.scan(hosts=host, arguments="-T5 -O -sV")
 
                 for _host in nm.all_hosts():
                     print(f"\n\tStatus: {nm[_host].state()}")
@@ -126,8 +129,9 @@ def scan_networks(ip_addresses):
                                 state = port_info[port]['state']
                                 service = port_info[port]['name']
                                 version = port_info[port]['version']
-                                dns = '\tDNS' if port == 53 else '\t'
-                                print(f"{dns}\tPort: {port}\tState: {state}\tService: {service} {version if version else ''}")
+                                type = get_port_type(port)
+                                print(f"\t{type}\tPort: {port}\tState: {state}\tService: {service} {version if version else ''}")
+                                detect_http_service(host, port)
 
                 pbar_devices.update(1)
 
@@ -141,6 +145,28 @@ def scan_networks(ip_addresses):
 
     except Exception as e:
         print(f"Error scanning network: {e}")
+        
+def get_port_type(port: int):
+    insecure_ports = [21, 23, 25, 80, 110, 143, 389, 445, 1433, 3306, 3389, 8000]
+    return 'INSEC' if port in insecure_ports else ''
+        
+def detect_http_service(ip, port):
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(2)
+        s.connect((ip, port))
+        s.send(b'GET / HTTP/1.0\r\n\r\n')
+        banner = s.recv(1024)
+        s.close()
+        
+        if b'HTTP' in banner:
+            if b'HTTPS' in banner or port == 443:
+                http_hosts.append((ip, port, 'https'))
+            else:
+                http_hosts.append((ip, port, 'http'))
+        
+    except (socket.timeout, socket.error):
+        return False
         
 def show():
     """
@@ -172,11 +198,14 @@ def show():
     active_ip_addresses = get_active_ip_addresses()
 
     if active_ip_addresses:
-        print("The active IP addresses are:")
+        print("Active IP addresses:")
         for ip in active_ip_addresses:
             print(f"- {ip}")
         print()
         
         scan_networks(active_ip_addresses)
+        
+        if http_hosts:
+            files.show(http_hosts)
     else:
         print("No active IP addresses found with connection.")
