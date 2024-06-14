@@ -7,6 +7,29 @@ import tools.files as files
 
 http_hosts = []
 
+nmap_timing_options = ('-T0', '-T1', '-T2', '-T3', '-T4', '-T5')
+nmap_timings = """
+Nmap Timing Templates:
+
+-T0 (Paranoid)
+Description: This is the slowest and stealthiest timing template. Nmap waits for about 5 minutes (300 seconds) between each probe. It is designed to avoid detection by Intrusion Detection Systems (IDS). Suitable for extremely stealthy scanning.
+
+-T1 (Sneaky)
+Description: This template is slightly faster than -T0 but still focuses on avoiding detection. It waits for about 15 seconds between each probe. It’s useful for environments where a bit more speed is acceptable, but stealth is still a priority.
+
+-T2 (Polite)
+Description: This timing template is used to reduce the load on the network and avoid crashing certain systems. It waits for about 4 seconds between each probe, making it slower but more considerate of the network and target hosts.
+
+-T3 (Normal)
+Description: This is the default timing template in Nmap. It provides a balance between speed and accuracy, waiting about 0.4 seconds between probes. It is suitable for most scanning scenarios.
+
+-T4 (Aggressive)
+Description: This template speeds up the scan significantly, waiting only about 0.1 seconds between probes. It is designed for environments where speed is more important than stealth. It’s useful for quick scans but can be noisy and easily detected by IDS.
+
+-T5 (Insane) - Default
+Description: This is the fastest timing template. Nmap sends probes as quickly as possible, with virtually no wait time between probes. It is useful for very fast scans in environments where detection is not a concern. However, it can overwhelm the network and may result in inaccurate results due to dropped packets.
+"""
+
 def get_active_ip_addresses():
     """
     Get all active ip addresses in your network.
@@ -74,6 +97,14 @@ def scan_networks(ip_addresses):
     - Exception: Caught for any other unexpected errors that occur during execution.
     """
     
+    print('Choose an scan timing option')
+    print('Options:')
+    print(nmap_timings)
+    scan_timing = input('Insert the scan timing: ')
+    
+    if (scan_timing not in nmap_timing_options):
+        scan_timing = '-T5'
+    
     # Check if IP Addresses are Provided
     if not ip_addresses:
         return
@@ -91,7 +122,7 @@ def scan_networks(ip_addresses):
         with tqdm(total=len(ip_addresses), desc="Scanning network", unit="IP") as pbar:
             for ip in ip_addresses:
                 pbar.set_description(f"Scanning network for {ip}")
-                nm.scan(hosts=f"{ip}/24", arguments="-T5 -sP")
+                nm.scan(hosts=f"{ip}/24", arguments=f"{scan_timing} -sP")
 
                 for host in nm.all_hosts():
                     if host not in devices_found:
@@ -105,7 +136,7 @@ def scan_networks(ip_addresses):
             for host in devices_found:
                 structured_hosts[host] = {}
                 pbar_devices.set_description(f"Scanning {host}")
-                nm.scan(hosts=host, arguments="-T5 -O -sV")
+                nm.scan(hosts=host, arguments=f"{scan_timing} -O -sV")
 
                 for _host in nm.all_hosts():
                     host_status = nm[_host].state()
@@ -159,7 +190,8 @@ def scan_networks(ip_addresses):
 
         pbar_devices.close()
         
-        print(structured_hosts)
+        # TODO jpiraquive: add html functionality
+        # print(structured_hosts)
         # misc.hosts_html_output()
 
     # Exception Handling
