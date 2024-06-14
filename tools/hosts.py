@@ -84,6 +84,8 @@ def scan_networks(ip_addresses):
 
         # Prepare List for Found Devices
         devices_found = []
+        
+        structured_hosts = {}
 
         # First Progress Bar - Network Scanning
         with tqdm(total=len(ip_addresses), desc="Scanning network", unit="IP") as pbar:
@@ -101,29 +103,44 @@ def scan_networks(ip_addresses):
         # Second Progress Bar - Device Scanning
         with tqdm(total=len(devices_found), desc="Scanning devices", unit="device") as pbar_devices:
             for host in devices_found:
+                structured_hosts[host] = {}
                 pbar_devices.set_description(f"Scanning {host}")
                 nm.scan(hosts=host, arguments="-T5 -O -sV")
 
                 for _host in nm.all_hosts():
-                    print(f"\n\tStatus: {nm[_host].state()}")
-                    print(f"\tHostname: {nm[_host].hostname() if nm[_host].hostname() else 'Unknown'}")
+                    host_status = nm[_host].state()
+                    hostname = nm[_host].hostname() if nm[_host].hostname() else 'Unknown'
+                    
+                    structured_hosts[host]['status'] = host_status
+                    structured_hosts[host]['hostname'] = hostname
+                    
+                    print(f"\n\tStatus: {host_status}")
+                    print(f"\tHostname: {hostname}")
 
                     if 'addresses' in nm[_host] and 'mac' in nm[_host]['addresses']:
                         mac_address = nm[_host]['addresses']['mac'].upper()
+                        structured_hosts[host]['mac'] = mac_address
                         print(f"\tMAC Address: {mac_address}")
                         
                     if 'osmatch' in nm[_host]:
                         os_match = nm[_host]['osmatch']
                         for os in os_match:
+                            structured_hosts[host]['os_name'] = os['name']
+                            structured_hosts[host]['os_accuracy'] = os['accuracy']
                             print(f"\tOS Name: {os['name']}")
                             print(f"\tOS Accuracy: {os['accuracy']}")
 
+                    structured_hosts[host]['protocol'] = {}
+
                     if nm[_host].all_protocols():
                         for protocol in nm[_host].all_protocols():
+                            structured_hosts[host]['protocol'][protocol] = {}
                             print(f"\tProtocol: {protocol}")
 
                             port_info = nm[_host][protocol]
                             sorted_ports = sorted(port_info.keys())
+                            
+                            structured_hosts[host]['protocol'][protocol]['ports'] = {}
                             
                             for port in sorted_ports:
                                 state = port_info[port]['state']
@@ -131,13 +148,18 @@ def scan_networks(ip_addresses):
                                 version = port_info[port]['version']
                                 type = get_port_type(port)
                                 print(f"\t{type}\tPort: {port}\tState: {state}\tService: {service} {version if version else ''}")
+                                structured_hosts[host]['protocol'][protocol]['ports'][port] = {
+                                    'state': state,
+                                    'service': service,
+                                    'version': version if version else '',
+                                }
                                 detect_http_service(host, port)
 
                 pbar_devices.update(1)
 
         pbar_devices.close()
         
-        misc.hosts_html_output(devices_found)
+        misc.hosts_html_output()
 
     # Exception Handling
     except nmap.PortScannerError as e:
