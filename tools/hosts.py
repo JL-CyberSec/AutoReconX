@@ -2,7 +2,7 @@ from tqdm import tqdm
 import nmap
 import netifaces as ni
 import socket
-import misc
+import tools.misc as misc
 import tools.files as files
 
 http_hosts = []
@@ -159,7 +159,8 @@ def scan_networks(ip_addresses):
 
         pbar_devices.close()
         
-        misc.hosts_html_output()
+        print(structured_hosts)
+        # misc.hosts_html_output()
 
     # Exception Handling
     except nmap.PortScannerError as e:
