@@ -1,6 +1,10 @@
 import subprocess
 
 def show():
+    """
+    Get firewall information of your machine
+    """
+
     print("===== FIREWALL INFORMATION =====\n")
     
     try:
