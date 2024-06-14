@@ -73,11 +73,13 @@ def scan_networks(ip_addresses):
 
                             port_info = nm[_host][protocol]
                             sorted_ports = sorted(port_info.keys())
+                            
                             for port in sorted_ports:
                                 state = port_info[port]['state']
                                 service = port_info[port]['name']
                                 version = port_info[port]['version']
-                                print(f"\t\tPort: {port}\tState: {state}\tService: {service} {version if version else ''}")
+                                dns = '\tDNS' if port == 53 else '\t'
+                                print(f"{dns}\tPort: {port}\tState: {state}\tService: {service} {version if version else ''}")
 
                 pbar_devices.update(1)
                 
@@ -97,7 +99,7 @@ def show():
     if active_ip_addresses:
         print("The active IP addresses are:")
         for ip in active_ip_addresses:
-            print(ip)
+            print(f"- {ip}")
         print()
         
         scan_networks(active_ip_addresses)
