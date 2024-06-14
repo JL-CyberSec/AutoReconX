@@ -130,6 +130,8 @@ def scan_networks(ip_addresses):
                         pbar.update(1)
 
         pbar.close()
+        
+        print()
 
         # Second Progress Bar - Device Scanning
         with tqdm(total=len(devices_found), desc="Scanning devices", unit="device") as pbar_devices:

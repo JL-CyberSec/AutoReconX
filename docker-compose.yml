@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  kali:
+    build: .
+    container_name: kali_container
+    networks:
+      - kali_network
+    volumes:
+      - ./:/home/AutoReconX
+    tty: true
+
+networks:
+  kali_network:
+    driver: bridge
