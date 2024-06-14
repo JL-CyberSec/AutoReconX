@@ -9,7 +9,7 @@ def run_dirb(target_url):
         wordlist_path = ''
 
     try:
-        result = subprocess.run(['dirb', target_url, wordlist_path], capture_output=True, text=True)
+        result = subprocess.run(['dirb', target_url, wordlist_path, '-S'], capture_output=True, text=True)
 
         if result.returncode == 0:
             output_lines = result.stdout.splitlines()
