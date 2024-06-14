@@ -90,6 +90,8 @@ def scan_networks(ip_addresses):
         print(f"Error scanning network: {e}")
         
 def show():
+    print("===== NETWORK HOSTS ENUMERATION =====\n")
+    
     active_ip_addresses = get_active_ip_addresses()
 
     if active_ip_addresses:

@@ -1,6 +1,8 @@
 import subprocess
 
 def show():
+    print("===== SYSTEM INFORMATION =====\n")
+    
     try:
         neofetch_output = subprocess.check_output(['neofetch'], text=True)
         print(neofetch_output)

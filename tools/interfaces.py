@@ -58,6 +58,8 @@ def show_io_counters(interface_name):
         print(f"\tDrop Out:\t{iface_io.dropout}")
     
 def show():
+    print("===== INTERFACES ENUMERATION =====\n")
+    
     interfaces = psutil.net_if_addrs()
     
     check_internet_access()

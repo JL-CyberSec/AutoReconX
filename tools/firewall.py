@@ -1,6 +1,8 @@
 import subprocess
 
 def show():
+    print("===== FIREWALL INFORMATION =====\n")
+    
     try:
         iptables_output = subprocess.check_output(['sudo', 'iptables', '-L'], text=True)
         print("iptables rules:")
