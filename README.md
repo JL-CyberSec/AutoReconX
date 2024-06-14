@@ -6,7 +6,7 @@ Automation Tool for Pentesting
 
 ## Authors
 - Leandro Panesso Atehortúa
-- Jhon Alejandro Piraquive Ramirez
+- Jhon Alejandro Piraquive Ramírez
 
 ## Installation Instructions
 
