@@ -6,7 +6,7 @@ def run_dirb(target_url):
     wordlist_path = input('Wordlist path: ')
     
     if not os.path.exists(wordlist_path):
-        wordlist_path = ''
+        wordlist_path = '/usr/share/dirb/wordlists/common.txt'
 
     try:
         result = subprocess.run(['dirb', target_url, wordlist_path, '-S'], capture_output=True, text=True)
