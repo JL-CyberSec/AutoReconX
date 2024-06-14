@@ -57,7 +57,7 @@ def show_io_counters(interface_name):
         print(f"\tDrop In:\t{iface_io.dropin}")
         print(f"\tDrop Out:\t{iface_io.dropout}")
     
-def show_network_interfaces():
+def show():
     interfaces = psutil.net_if_addrs()
     
     check_internet_access()
@@ -70,6 +70,3 @@ def show_network_interfaces():
         show_addresses(addresses)
         
     print()
-
-if __name__ == "__main__":
-    show_network_interfaces()

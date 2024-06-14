@@ -89,7 +89,7 @@ def scan_networks(ip_addresses):
     except Exception as e:
         print(f"Error scanning network: {e}")
         
-def show_network_devices():
+def show():
     active_ip_addresses = get_active_ip_addresses()
 
     if active_ip_addresses:
@@ -101,6 +101,3 @@ def show_network_devices():
         scan_networks(active_ip_addresses)
     else:
         print("No active IP addresses found with connection.")
-
-if __name__ == "__main__":
-    show_network_devices()
