@@ -68,6 +68,7 @@ def get_metadata(url):
     if response.status_code == 200:
         for metadata in response.headers:
             print(f"\t{metadata}: {response.headers[metadata]}")
+    print('\n')
 
 def show(http_hosts):
     """
