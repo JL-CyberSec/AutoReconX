@@ -63,22 +63,34 @@ Welcome View:
 
 By pressing any key you'll continue step by step our software
 
-1. System Information
-    <p> In this step you'll find all your system information </p>
+1. System
+    <p>
+        In this step you'll find all your system information
+    </p>
     <p align="center"><img src="assets/user_guide/3.png" width="600" alt="User Guide"></p>
 
-2. Interfaces Information
-    <p> In this step you'll find all your interfaces information </p>
+2. Interfaces
+    <p>
+        In this step you'll find all your interfaces information
+    </p>
     <p align="center"><img src="assets/user_guide/4.png" width="600" alt="User Guide"></p>
 
-3. Firewall Information
-    <p> In this step you'll find any information related to firewalls </p>
+3. Firewall
+    <p>
+        In this step you'll find any information related to firewalls
+    </p>
     <p align="center"><img src="assets/user_guide/5.png" width="600" alt="User Guide"></p>
 
-4. Network Hosts Information
-    <p> In this step you'll find any information related to any host connected to your network </p>
+4. Network Hosts
+    <p>
+        In this step you'll find any information related to any host connected to the network
+        and each port if it's open and if it's insecure
+    </p>
     <p align="center"><img src="assets/user_guide/6.png" width="600" alt="User Guide"></p>
-
-4. Public Files Enumeration
-    <p> In this step you'll find any information related to files or folders accesible for hosts that have an http or https service running; Don't hesitate this could take a while depending on how many hosts are in your network</p>
     <p align="center"><img src="assets/user_guide/7.png" width="600" alt="User Guide"></p>
+
+5. Public Files Enumeration
+    <p>
+        In this step you'll find any information related to files accesible for hosts that have an http or https service running also you will get the metadata related to the file; Don't hesitate this could take a while depending on how many hosts are in your network
+    </p>
+    <p align="center"><img src="assets/user_guide/8.png" width="600" alt="User Guide"></p>
