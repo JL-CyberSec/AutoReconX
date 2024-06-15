@@ -23,7 +23,7 @@ def run_dirb(target_url):
     other issues occur.
     """
 
-    wordlist_path = input('Wordlist path: ')
+    wordlist_path = input('Enter your own wordlist path, by default /usr/share/dirb/wordlists/common.txt will be used: ')
     
     if not os.path.exists(wordlist_path):
         wordlist_path = '/usr/share/dirb/wordlists/common.txt'
