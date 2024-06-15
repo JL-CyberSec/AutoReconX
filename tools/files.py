@@ -67,7 +67,7 @@ def get_metadata(url):
 
     if response.status_code == 200:
         for metadata in response.headers:
-            print(f"\t\t{metadata}:\t\t{response.headers[metadata]}")
+            print(f"\t{metadata}: {response.headers[metadata]}")
 
 def show(http_hosts):
     """
@@ -104,7 +104,7 @@ def show(http_hosts):
         if results:
             print("\nFound files:")
             for line in results:
-                print(f"{line}\n")
+                print(f"{line}")
 
                 pattern = r'\+ (http://[^ ]+)'
                 match = re.search(pattern, line)
