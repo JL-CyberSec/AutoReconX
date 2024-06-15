@@ -1,6 +1,7 @@
 import subprocess
 import requests
 import os
+import re
 
 def run_dirb(target_url):
     """
@@ -102,7 +103,10 @@ def show(http_hosts):
         if results:
             print("\nFound files:")
             for line in results:
-                # get_metadata(line)
                 print(line)
-                
-                
+
+                pattern = r'\+ (http://[^ ]+)'
+                match = re.search(pattern, line)
+
+                if match:
+                    get_metadata(match.group(1))
